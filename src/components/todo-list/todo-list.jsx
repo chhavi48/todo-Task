@@ -18,11 +18,9 @@ export const TodoList = () => {
   const [showConfirm, setShowConfirm] = React.useState(true);
   const [currentPage, setCurrentPage] = React.useState(1);
   const [animateId, setAnimateId] = React.useState(null);
-  const [filterStatus, setFilterStatus] = React.useState('all'); // "all", "active", "completed"
+  const [filterStatus, setFilterStatus] = React.useState('all');
   const [searchText, setSearchText] = React.useState('');
   const tasksPerPage = 10;
-
-  // Safe access to localStorage
   React.useEffect(() => {
     if (typeof window !== 'undefined' && window.localStorage) {
       const flag = window.localStorage.getItem('todo_confirm_delete');
@@ -32,7 +30,6 @@ export const TodoList = () => {
     }
   }, []);
 
-  // Reset to first page when filter or search changes
   React.useEffect(() => {
     setCurrentPage(1);
   }, [filterStatus, searchText]);
@@ -84,18 +81,14 @@ export const TodoList = () => {
 
   const handleSearchKeyUp = (e) => {
     if (e.keyCode === 27) {
-      // Escape key
       setSearchText('');
     }
   };
 
-  // Filter and search todos
   const filteredTodos = todos.filter((todo) => {
-    // First apply status filter
     if (filterStatus === 'active' && todo.checked) { return false; }
     if (filterStatus === 'completed' && !todo.checked) { return false; }
 
-    // Then apply search filter if there's search text
     if (searchText.trim() !== '') {
       return todo.label.toLowerCase().includes(searchText.toLowerCase());
     }
@@ -103,7 +96,6 @@ export const TodoList = () => {
     return true;
   });
 
-  // Pagination Logic
   const indexOfLastTodo = currentPage * tasksPerPage;
   const indexOfFirstTodo = indexOfLastTodo - tasksPerPage;
   const currentTodos = filteredTodos.slice(indexOfFirstTodo, indexOfLastTodo);
@@ -114,7 +106,6 @@ export const TodoList = () => {
     setCurrentPage(pageNum);
   };
 
-  // Generate page numbers
   const pageNumbers = [];
   const maxPageButtons = 5;
 
@@ -129,7 +120,6 @@ export const TodoList = () => {
     pageNumbers.push(i);
   }
 
-  // Get counts for the status bar
   const totalCount = todos.length;
   const completedCount = todos.filter((t) => t.checked).length;
   const activeCount = totalCount - completedCount;
@@ -144,7 +134,6 @@ export const TodoList = () => {
         </div>
       </div>
 
-      {/* Search and Filter Controls */}
       <div className="todo-controls">
         <div className="search-container">
           <input
@@ -184,7 +173,6 @@ export const TodoList = () => {
         </div>
       </div>
 
-      {/* Filter Results Summary */}
       {(searchText || filterStatus !== 'all') && (
         <div className="filter-summary">
           Showing {filteredCount} {filterStatus !== 'all' ? filterStatus : ''}
@@ -210,8 +198,6 @@ export const TodoList = () => {
               </div>
             ))}
           </div>
-
-          {/* Pagination */}
           {totalPages > 1 && (
             <div className="pagination">
               <button
